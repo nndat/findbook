@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <title>Book Reviews</title>
+  <style>
+    #goodreads-widget {
+      font-family: georgia, serif;
+      padding: 18px 0;
+      width: 565px;
+    }
+
+    #goodreads-widget h1 {
+      font-weight: normal;
+      font-size: 16px;
+      border-bottom: 1px solid #BBB596;
+      margin-bottom: 0;
+    }
+
+    #goodreads-widget a {
+      text-decoration: none;
+      color: #660;
+    }
+
+    iframe {
+      background-color: #fff;
+    }
+
+    #goodreads-widget a:hover {
+      text-decoration: underline;
+    }
+
+    #goodreads-widget a:active {
+      color: #660;
+    }
+
+    #gr_footer {
+      width: 100%;
+      border-top: 1px solid #BBB596;
+      text-align: right;
+    }
+
+    #goodreads-widget .gr_branding {
+      color: #382110;
+      font-size: 11px;
+      text-decoration: none;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <br>
+  <div class="container">
+    <form action="{{ url_for('index') }}" method="post">
+      <div class="form-group">
+        <input type="text" placeholder="Nhập tên sách" class="form-control" name="book" , required>
+      </div>
+      <button type="submit" class="btn btn-primary">Tìm Sách</button>
+    </form>
+    <br>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <p class="alert alert-danger">{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    {% if books %}
+    {% for book in books %}
+    <div class="row">
+      <div class="col-md-7">
+        <div class="row">
+          <div class="col-3">
+            <img src="{{ book.get('image_url') }}">
+          </div>
+          <div class="col">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <!-- <td><strong>Title:</strong></td> -->
+                  <td>Title:</td>
+                  <td><h5>{{ book['title'] }}</h5></td>
+                </tr>
+                <tr>
+                  <!-- <td><strong>Author:</strong></td> -->
+                  <td>Author:</td>
+                  <td>{{ book['author'] }}</td>
+                </tr>
+                <tr>
+                  <!-- <td><strong>Rating:</strong></td> -->
+                  <td>Rating:</td>
+                  <td>{{ book['rating'] }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div id="goodreads-widget">
+            <div id="gr_header">
+              <h1>Goodreads reviews</a></h1>
+            </div>
+            {% set widget = "https://www.goodreads.com/api/reviews_widget_iframe?isbn="  + book['isbn'] %}
+            <iframe id="the_iframe" src="{{ widget }}" width="565" height="400" frameborder="0"></iframe>
+            <div id="gr_footer">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="row">
+          {% for item in book['prices'] %}
+          <div class="col-md-3">
+            <a href="{{ item['link'] }}">
+              <img src="{{ item['img_url'] }}" width="75%">
+              <!-- <img src="{{ item['img_url'] }}"> -->
+              <h6>{{ item['title'] }}</h6>
+              <p>{{ item['price'] }}</p>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+    {% endfor %}
+    {% endif %}
+  </div>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+
+</html>
